@@ -16,4 +16,4 @@ module load mpi/openmpi/4.1
 module load lib/hdf5/1.12.1-gnu-11.2-openmpi-4.1  
 source A1/bin/activate  # Activate your virtual environment.
 
-python A1.py
+python A1B.py
