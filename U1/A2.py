@@ -53,11 +53,14 @@ class KMeans:
                     1.0, torch.iinfo(torch.int64).max
                 )
                 
+                # Communication
+                MPI.COMM_WORLD.allreduce(assigned_points)
+                MPI.COMM_WORLD.allreduce(points_in_cluster)
+                
                 # Compute new centroids.
                 new_cluster_centers[i : i + 1, :] = assigned_points / points_in_cluster
                 
-            # Communication
-            MPI.COMM_WORLD.Allreduce(new_cluster_centers)
+            
 
             # Check whether centroid movement has converged.
             self._inertia = ((self._cluster_centers - new_cluster_centers) ** 2).sum()
