@@ -6,7 +6,7 @@ import torch
 from mpi4py import MPI
 
 class KMeans:
-    def __init__(self):
+    def __init__(self, n_clusters=8, init="random", max_iter=300, tol=-1.0):
         self.init = init             # initialization mode (default: random)
         self.max_iter = max_iter     # maximum number of iterations
         self.n_clusters = n_clusters # number of clusters
