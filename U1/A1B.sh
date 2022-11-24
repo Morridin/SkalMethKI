@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH --job-name=kmeans                  # job name
-#SBATCH --partition=gpu_4                 # queue for resource allocation
+#SBATCH --job-name=U1_A1B                  # job name
+#SBATCH --partition=gpu_4                  # queue for resource allocation
 #SBATCH --time=30:00                       # wall-clock time limit  
 #SBATCH --mem=30000                        # memory per node
 #SBATCH --nodes=1                          # number of nodes to be used

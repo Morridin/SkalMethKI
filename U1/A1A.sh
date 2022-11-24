@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=kmeans                  # job name
+#SBATCH --job-name=U1_A1A                  # job name
 #SBATCH --partition=single                 # queue for resource allocation
 #SBATCH --time=30:00                       # wall-clock time limit  
 #SBATCH --mem=30000                        # memory per node

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=U1A3                    # job name
+#SBATCH --job-name=U1_A3                   # job name
 #SBATCH --partition=multiple               # queue for the resource allocation.
 #SBATCH --time=30:00                       # wall-clock time limit  
 #SBATCH --mem=30000                        # memory per node
