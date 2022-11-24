@@ -14,27 +14,19 @@ class KMeans:
         
         self._inertia = float("nan")
         self._cluster_centers = None
-        
-        # MPI Initialisation
-        
-        self.rank = MPI.COMM_WORLD.rank
-        self.size = MPI.COMM_WORLD.size
 
     def _initialize_centroids(self, x):
         # Ensure every node has the same random seed.
         seed = torch.random.initial_seed()
-        MPI.COMM_WORLD.bcast(seed)
-        torch.random.manual_seed(seed)
+        torch.random.manual_seed(MPI.COMM_WORLD.bcast(seed))
         
         indices = torch.randperm(x.shape[0])[: self.n_clusters]
         self._cluster_centers = x[indices]
 
     def _fit_to_cluster(self, x):
-        print(x.shape)
-        print(self._cluster_centers.shape)
-        exit(666)
-        distances = torch.sum(torch.pow(x - self._cluster_centers, 2), 0, keepdim=True) 
-        MPI.COMM_WORLD.allreduce(distances)
+        squared_distances = torch.cdist(x, self._cluster_centers) ** 2
+        distances = torch.empty(squared_distances.shape, dtype=torch.float)
+        MPI.COMM_WORLD.Allreduce(squared_distances, distances)
         matching_centroids = distances.argmin(axis=1, keepdim=True)
 
         return matching_centroids
