@@ -53,7 +53,7 @@ class KMeans:
                 )
                 
                 # Compute new centroids.
-                new_cluster_centers[i : i + 1, :] = MPI.COMM_WORLD.allgather(assigned_points / points_in_cluster)
+                MPI.COMM_WORLD.Allgather(assigned_points / points_in_cluster, new_cluster_centers[i : i + 1, :])
            
             # Check whether centroid movement has converged.
             self._inertia = ((self._cluster_centers - new_cluster_centers) ** 2).sum()
