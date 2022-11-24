@@ -30,6 +30,9 @@ class KMeans:
         self._cluster_centers = x[indices]
 
     def _fit_to_cluster(self, x):
+        print(x.shape)
+        print(self._cluster_centers.shape)
+        exit(666)
         distances = torch.sum(torch.pow(x - self._cluster_centers, 2), 0, keepdim=True) 
         MPI.COMM_WORLD.allreduce(distances)
         matching_centroids = distances.argmin(axis=1, keepdim=True)

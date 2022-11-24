@@ -14,22 +14,16 @@ class KMeans:
         
         self._inertia = float("nan")
         self._cluster_centers = None
-        
-        # MPI Initialisation
-        
-        self.rank = MPI.COMM_WORLD.rank
-        self.size = MPI.COMM_WORLD.size
 
     def _initialize_centroids(self, x):
-        if self.rank == 0:
+        if rank == 0:
             indices = torch.randperm(x.shape[0])[: self.n_clusters]
             self._cluster_centers = x[indices]
-        MPI.COMM_WORLD.Bcast(self._cluster_centers)
+        self._cluster_centers = MPI.COMM_WORLD.bcast([self._cluster_centers, MPI.FLOAT])
 
     def _fit_to_cluster(self, x):
         distances = torch.cdist(x, self._cluster_centers)
         matching_centroids = distances.argmin(axis=1, keepdim=True)
-
         return matching_centroids
 
     def fit(self, x):
@@ -50,17 +44,18 @@ class KMeans:
                 # Accumulate points and total number of points in cluster.
                 assigned_points = (x * selection).sum(axis=0, keepdim=True)
                 points_in_cluster = selection.sum(axis=0, keepdim=True).clamp(
-                    1.0, torch.iinfo(torch.int64).max
-                )
+                    0.0, torch.iinfo(torch.int64).max)
+                
+                a_p_global = torch.empty(assigned_points.shape, dtype=torch.float)
+                p_i_c_global = torch.empty(points_in_cluster.shape, dtype=torch.int64)
                 
                 # Communication
-                MPI.COMM_WORLD.allreduce(assigned_points)
-                MPI.COMM_WORLD.allreduce(points_in_cluster)
+                MPI.COMM_WORLD.Allreduce(assigned_points, a_p_global)
+                MPI.COMM_WORLD.Allreduce(points_in_cluster p_i_c_global)
                 
                 # Compute new centroids.
-                new_cluster_centers[i : i + 1, :] = assigned_points / points_in_cluster
-                
-            
+                new_cluster_centers[i : i + 1, :] = a_p_global / p_i_c_global.clamp(
+                    1.0, torch.iinfo(torch.int64).max)
 
             # Check whether centroid movement has converged.
             self._inertia = ((self._cluster_centers - new_cluster_centers) ** 2).sum()
