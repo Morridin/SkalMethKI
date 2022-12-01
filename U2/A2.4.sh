@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=U2_A2 (Many duplicates) # job name
+#SBATCH --job-name=U2_A2(Many duplicates)  # job name
 #SBATCH --partition=multiple               # queue for the resource allocation.
 #SBATCH --time=5:00                        # wall-clock time limit  
 #SBATCH --mem=90000                        # memory per node
